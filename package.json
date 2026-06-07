@@ -6,7 +6,7 @@
   "homepage": "https://mathjs.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/josdejong/mathjs.git"
+    "url": "https://github.com/rezalabs/mathjs.git"
   },
   "license": "Apache-2.0",
   "keywords": [
@@ -155,6 +155,7 @@
     "test:types": " tsc -p ./tsconfig.json && node --loader ts-node/esm ./test/typescript-tests/testTypes.ts",
     "coverage": "c8 --reporter=lcov --reporter=text-summary mocha test/unit-tests && echo \"\nDetailed coverage report is available at ./coverage/lcov-report/index.html\"",
     "prepublishOnly": "npm run test:all && npm run lint",
+    "prepare": "gulp",
     "update-authors": "node ./tools/update-authors.js"
   },
   "bin": {
