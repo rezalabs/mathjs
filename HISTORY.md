@@ -2,6 +2,8 @@
 
 # unpublished changes since 15.2.0
 
+- Fix: improve TypeScript inference for `multiply` and `dotMultiply` with
+  units and collections.
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

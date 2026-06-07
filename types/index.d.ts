@@ -18,6 +18,22 @@ export type MathScalarType = MathNumericType | Unit
 export type MathGeneric<T extends MathScalarType = MathNumericType> = T
 export type MathArray<T = MathGeneric> = T[] | Array<MathArray<T>>
 export type MathCollection<T = MathGeneric> = MathArray<T> | Matrix<T>
+export type MathArrayElementwiseResult<
+  TArray extends MathArray<MathScalarType>,
+  TResult extends MathScalarType
+> = TArray extends Array<infer TItem>
+  ? TItem extends MathArray<MathScalarType>
+    ? Array<MathArrayElementwiseResult<TItem, TResult>>
+    : TResult[]
+  : never
+export type MathCollectionElementwiseResult<
+  TCollection extends MathCollection<MathScalarType>,
+  TResult extends MathScalarType
+> = TCollection extends Matrix
+  ? Matrix<TResult>
+  : TCollection extends MathArray
+    ? MathArrayElementwiseResult<TCollection, TResult>
+    : never
 export type MathType = MathScalarType | MathCollection
 export type MathExpression = string | string[] | MathCollection
 
@@ -1197,6 +1213,8 @@ export interface MathJsInstance extends MathJsFactory {
    * @param y Second value to add
    * @returns Sum of x and y
    */
+  add<T extends MathCollection<Unit>>(x: T, y: T): T
+  add<T extends MathCollection<Unit>>(x: T, y: T, ...values: T[]): T
   add<T extends MathType>(x: T, y: T): T
   add<T extends MathType>(x: T, y: T, ...values: T[]): T
   add(x: MathType, y: MathType): MathType
@@ -1343,6 +1361,14 @@ export interface MathJsInstance extends MathJsFactory {
    * @param y Right hand value
    * @returns Multiplication of x and y
    */
+  dotMultiply<T extends MathCollection<MathScalarType>>(
+    x: Unit,
+    y: T
+  ): MathCollectionElementwiseResult<T, Unit>
+  dotMultiply<T extends MathCollection<MathScalarType>>(
+    x: T,
+    y: Unit
+  ): MathCollectionElementwiseResult<T, Unit>
   dotMultiply<T extends MathCollection>(x: T, y: MathType): T
   dotMultiply<T extends MathCollection>(x: MathType, y: T): T
   dotMultiply(x: Unit, y: MathType): Unit
@@ -1518,6 +1544,14 @@ export interface MathJsInstance extends MathJsFactory {
    * @returns Multiplication of x and y
    */
 
+  multiply<T extends MathCollection<MathScalarType>>(
+    x: Unit,
+    y: T
+  ): MathCollectionElementwiseResult<T, Unit>
+  multiply<T extends MathCollection<MathScalarType>>(
+    x: T,
+    y: Unit
+  ): MathCollectionElementwiseResult<T, Unit>
   multiply<T extends Matrix>(x: T, y: MathType): Matrix
   multiply<T extends Matrix>(x: MathType, y: T): Matrix
 
@@ -5338,6 +5372,10 @@ export interface MathJsChain<TValue> {
    * element wise.
    * @param y Second value to add
    */
+  add<T extends MathCollection<Unit>>(
+    this: MathJsChain<T>,
+    y: T
+  ): MathJsChain<T>
   add<T extends MathType>(this: MathJsChain<T>, y: T): MathJsChain<T>
   add(this: MathJsChain<MathType>, y: MathType): MathJsChain<MathType>
 
@@ -5534,6 +5572,14 @@ export interface MathJsChain<TValue> {
    * matrices and scalar values.
    * @param y Right hand value
    */
+  dotMultiply<T extends MathCollection<MathScalarType>>(
+    this: MathJsChain<Unit>,
+    y: T
+  ): MathJsChain<MathCollectionElementwiseResult<T, Unit>>
+  dotMultiply<T extends MathCollection<MathScalarType>>(
+    this: MathJsChain<T>,
+    y: Unit
+  ): MathJsChain<MathCollectionElementwiseResult<T, Unit>>
   dotMultiply<T extends MathCollection>(
     this: MathJsChain<T>,
     y: MathType
@@ -5670,6 +5716,14 @@ export interface MathJsChain<TValue> {
    * matrix product is calculated.
    * @param y The second value to multiply
    */
+  multiply<T extends MathCollection<MathScalarType>>(
+    this: MathJsChain<Unit>,
+    y: T
+  ): MathJsChain<MathCollectionElementwiseResult<T, Unit>>
+  multiply<T extends MathCollection<MathScalarType>>(
+    this: MathJsChain<T>,
+    y: Unit
+  ): MathJsChain<MathCollectionElementwiseResult<T, Unit>>
   multiply<T extends MathCollection>(
     this: MathJsChain<T>,
     y: MathType

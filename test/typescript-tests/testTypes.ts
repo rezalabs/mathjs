@@ -173,6 +173,35 @@ Basic usage examples
     math.matrix([6, 8])
   ) // Matrix + Array
 
+  const force = math.unit('10 N')
+  const direction = [0.1, -0.3, -4]
+  const unitVector = math.multiply(force, direction)
+  const reverseUnitVector = math.multiply(direction, force)
+  const dotUnitVector = math.dotMultiply(force, direction)
+  const reverseDotUnitVector = math.dotMultiply(direction, force)
+  const unitMatrix = math.multiply(force, math.matrix(direction))
+  const zeroGravityVector: MathArray<Unit> = [
+    math.unit('0 N'),
+    math.unit('0 N'),
+    math.unit('0 N')
+  ]
+  const totalGravity = math.add(zeroGravityVector, unitVector)
+
+  expectTypeOf(unitVector).toMatchTypeOf<Unit[]>()
+  expectTypeOf(reverseUnitVector).toMatchTypeOf<Unit[]>()
+  expectTypeOf(dotUnitVector).toMatchTypeOf<Unit[]>()
+  expectTypeOf(reverseDotUnitVector).toMatchTypeOf<Unit[]>()
+  expectTypeOf(unitMatrix).toMatchTypeOf<Matrix<Unit>>()
+  expectTypeOf(totalGravity).toMatchTypeOf<MathArray<Unit>>()
+  assert.deepStrictEqual(unitVector, [
+    math.unit('1 N'),
+    math.unit('-3 N'),
+    math.unit('-40 N')
+  ])
+  assert.deepStrictEqual(reverseUnitVector, unitVector)
+  assert.deepStrictEqual(dotUnitVector, unitVector)
+  assert.deepStrictEqual(reverseDotUnitVector, unitVector)
+
   // narrowed type inference
   const _b: Matrix = math.add(math.matrix([2]), math.matrix([3]))
   const _c: Matrix = math.subtract(math.matrix([4]), math.matrix([5]))
@@ -796,6 +825,18 @@ Chaining examples
       )
       .dotMultiply(2)
   ).toMatchTypeOf<MathJsChain<Matrix>>()
+  expectTypeOf(
+    math.chain(math.unit('10 N')).multiply([0.1, -0.3, -4])
+  ).toMatchTypeOf<MathJsChain<Unit[]>>()
+  expectTypeOf(
+    math.chain([0.1, -0.3, -4]).multiply(math.unit('10 N'))
+  ).toMatchTypeOf<MathJsChain<Unit[]>>()
+  expectTypeOf(
+    math.chain(math.unit('10 N')).dotMultiply([0.1, -0.3, -4])
+  ).toMatchTypeOf<MathJsChain<Unit[]>>()
+  expectTypeOf(
+    math.chain([0.1, -0.3, -4]).dotMultiply(math.unit('10 N'))
+  ).toMatchTypeOf<MathJsChain<Unit[]>>()
 
   // dotPow
   expectTypeOf(math.chain(1).dotPow(2)).toMatchTypeOf<
