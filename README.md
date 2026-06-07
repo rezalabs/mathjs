@@ -1,18 +1,11 @@
-![math.js](https://raw.githubusercontent.com/josdejong/mathjs/develop/misc/img/mathjs.svg)
+> **Fork of [josdejong/mathjs](https://github.com/josdejong/mathjs).** This fork adds TypeScript inference improvements for unit-vector multiplication. Install from GitHub: `npm install rezalabs/mathjs`
 
-[https://mathjs.org](https://mathjs.org)
+![math.js](https://raw.githubusercontent.com/josdejong/mathjs/develop/misc/img/mathjs.svg)
 
 Math.js is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with a large set of built-in functions and constants, and offers an integrated solution to work with different data types like numbers, big numbers, complex numbers, fractions, units, and matrices. Powerful and easy to use.
 
-[![Version](https://img.shields.io/npm/v/mathjs.svg)](https://www.npmjs.com/package/mathjs)
-[![Downloads](https://img.shields.io/npm/dm/mathjs.svg)](https://www.npmjs.com/package/mathjs)
-[![Build Status](https://github.com/josdejong/mathjs/workflows/Node.js%20CI/badge.svg)](https://github.com/josdejong/mathjs/actions)
-[![Maintenance](https://img.shields.io/maintenance/yes/2026.svg)](https://github.com/josdejong/mathjs/graphs/commit-activity)
-[![License](https://img.shields.io/github/license/josdejong/mathjs.svg)](https://github.com/josdejong/mathjs/blob/master/LICENSE)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjosdejong%2Fmathjs.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjosdejong%2Fmathjs?ref=badge_shield)
-[![Codecov](https://codecov.io/gh/josdejong/mathjs/branch/develop/graph/badge.svg)](https://codecov.io/gh/josdejong/mathjs)
-[![Github Sponsor](https://img.shields.io/github/sponsors/josdejong
-)](https://github.com/sponsors/josdejong)
+[![License](https://img.shields.io/github/license/josdejong/mathjs.svg)](https://github.com/rezalabs/mathjs/blob/develop/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/rezalabs/mathjs/develop)](https://github.com/rezalabs/mathjs)
 
 ## Features
 
@@ -30,13 +23,12 @@ Math.js is an extensive math library for JavaScript and Node.js. It features a f
 
 Math.js can be used in both node.js and in the browser.
 
-Install math.js using [npm](https://www.npmjs.com/package/mathjs):
+Install this fork from GitHub:
 
-    npm install mathjs
+    npm install rezalabs/mathjs
 
-Or download mathjs via one of the CDN's listed on the downloads page:
-
-&nbsp;&nbsp;&nbsp;&nbsp;[https://mathjs.org/download.html](https://mathjs.org/download.html#download)
+See the [upstream documentation](https://mathjs.org) for full usage guides,
+API reference, and CDN downloads.
 
 Math.js can be used similar to JavaScript's built-in Math library. Besides that,
 math.js can evaluate
@@ -91,7 +83,7 @@ Math.js works on any [ES2020](https://262.ecma-international.org/11.0/) compatib
 
 First clone the project from github:
 
-    git clone git@github.com:josdejong/mathjs.git
+    git clone git@github.com:rezalabs/mathjs.git
     cd mathjs
 
 Install the project dependencies:
@@ -191,11 +183,7 @@ To see the coverage results, open the generated report in your browser:
 
 ### Continuous integration testing
 
-Continuous integration tests are run on [GitHub Actions](https://github.com/josdejong/mathjs/actions) and [TestMu AI](https://www.testmuai.com/?utm_medium=sponsor&utm_source=mathjs) (formerly LambdaTest) every time a commit is pushed to GitHub. GitHub Actions runs the tests for different versions of node.js, and TestMu AI runs the tests on all major browsers.
-
-[![TestMu AI](https://raw.github.com/josdejong/mathjs/develop/misc/testmu-ai.svg)](https://www.testmuai.com/?utm_medium=sponsor&utm_source=mathjs)
-
-Thanks, GitHub Actions and TestMu AI for the generous free hosting of this open source project!
+Continuous integration tests are run on [GitHub Actions](https://github.com/rezalabs/mathjs/actions).
 
 ## License
 
@@ -216,6 +204,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+This is a fork of the upstream [josdejong/mathjs](https://github.com/josdejong/mathjs)
+project. All upstream credit and copyright belongs to Jos de Jong and
+contributors. This fork maintains the same Apache 2.0 license.
 
 mathjs contains a JavaScript port of the [CSparse](https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source) library, published under the LGPL-2.1+ license:
 
