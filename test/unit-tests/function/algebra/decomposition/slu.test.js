@@ -70,11 +70,13 @@ describe('slu', function () {
    * C = A(p,q) where p is the row permutation vector and q the column permutation vector.
    */
   function _permute (A, pinv, q) {
-    // matrix arrays
-    const values = A._values
-    const index = A._index
-    const ptr = A._ptr
-    const size = A._size
+    // extract sparse matrix data via public API
+    const json = A.toJSON()
+    const values = json.values
+    const index = json.index
+    const ptr = json.ptr
+    const size = json.size
+    const datatype = json.datatype
     // columns
     const n = size[1]
     // c arrays
@@ -99,7 +101,7 @@ describe('slu', function () {
       index: cindex,
       ptr: cptr,
       size,
-      datatype: A._datatype
+      datatype
     })
   }
 })

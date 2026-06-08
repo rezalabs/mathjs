@@ -19,6 +19,14 @@
   from the input (boolean, bigint) and uses the correct zero value (`false`,
   `0n`) for storage and reconstruction. Also added explicit `_getZero()`
   helper for all datatypes.
+- Fix: `SparseMatrix.prototype.valueOf()` and `toArray()` now use the
+  correct zero value for the matrix datatype (e.g., `Complex(0,0)` for
+  complex matrices, `bignumber(0)` for BigNumber matrices) instead of
+  hardcoding `0`.
+- Refactor: tests rewritten to assert on public API (`size()`, `valueOf()`,
+  `datatype()`, `get()`) instead of internal fields (`_size`, `_data`,
+  `_datatype`, `_values`, `_index`, `_ptr`). Fixed multiple `assert.throws`
+  calls that lacked error message validation.
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

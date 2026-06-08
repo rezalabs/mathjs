@@ -1711,8 +1711,8 @@ describe('SparseMatrix', function () {
       assert.deepStrictEqual(
         a,
         [
-          [new Complex(1, 1), 0, new Complex(2, 2)],
-          [0, 0, new Complex(3, 3)],
+          [new Complex(1, 1), new Complex(0, 0), new Complex(2, 2)],
+          [new Complex(0, 0), new Complex(0, 0), new Complex(3, 3)],
           [new Complex(4, 4), new Complex(5, 5), new Complex(6, 6)]
         ])
     })

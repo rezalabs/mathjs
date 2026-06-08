@@ -6,8 +6,8 @@ describe('FibonacciHeap', function () {
   describe('constructor', function () {
     it('should create heap', function () {
       const h = new FibonacciHeap()
-      assert.strictEqual(h._size, 0)
-      assert(h._minimum === null)
+      assert.strictEqual(h.size(), 0)
+      assert.strictEqual(h.isEmpty(), true)
     })
 
     it('should have a property isFibonacciHeap', function () {
@@ -29,30 +29,38 @@ describe('FibonacciHeap', function () {
     it('should insert node when heap is empty', function () {
       const h = new FibonacciHeap()
       h.insert(1, 'v1')
-      assert.strictEqual(h._size, 1)
-      assert(h._minimum !== null)
-      assert.strictEqual(h._minimum.key, 1)
-      assert.strictEqual(h._minimum.value, 'v1')
+      assert.strictEqual(h.size(), 1)
+      assert.strictEqual(h.isEmpty(), false)
+      // verify via extractMinimum
+      const n = h.extractMinimum()
+      assert.strictEqual(n.key, 1)
+      assert.strictEqual(n.value, 'v1')
     })
 
-    it('should insert two nodes when heap is empty', function () {
+    it('should insert two nodes and extract them in ascending order', function () {
       const h = new FibonacciHeap()
       h.insert(1, 'v1')
       h.insert(10, 'v10')
-      assert.strictEqual(h._size, 2)
-      assert(h._minimum !== null)
-      assert.strictEqual(h._minimum.key, 1)
-      assert.strictEqual(h._minimum.value, 'v1')
+      assert.strictEqual(h.size(), 2)
+      const n1 = h.extractMinimum()
+      assert.strictEqual(n1.key, 1)
+      assert.strictEqual(n1.value, 'v1')
+      const n2 = h.extractMinimum()
+      assert.strictEqual(n2.key, 10)
+      assert.strictEqual(n2.value, 'v10')
     })
 
     it('should insert two nodes when heap is empty, reverse order', function () {
       const h = new FibonacciHeap()
       h.insert(10, 'v10')
       h.insert(1, 'v1')
-      assert.strictEqual(h._size, 2)
-      assert(h._minimum !== null)
-      assert.strictEqual(h._minimum.key, 1)
-      assert.strictEqual(h._minimum.value, 'v1')
+      assert.strictEqual(h.size(), 2)
+      const n1 = h.extractMinimum()
+      assert.strictEqual(n1.key, 1)
+      assert.strictEqual(n1.value, 'v1')
+      const n2 = h.extractMinimum()
+      assert.strictEqual(n2.key, 10)
+      assert.strictEqual(n2.value, 'v10')
     })
   })
 
@@ -63,20 +71,22 @@ describe('FibonacciHeap', function () {
       const n = h.extractMinimum()
       assert.strictEqual(n.key, 1)
       assert.strictEqual(n.value, 'v1')
-      assert.strictEqual(h._size, 0)
-      assert(h._minimum === null)
+      assert.strictEqual(h.size(), 0)
+      assert.strictEqual(h.isEmpty(), true)
     })
 
     it('should extract node from heap, two nodes', function () {
       const h = new FibonacciHeap()
       h.insert(1, 'v1')
       h.insert(10, 'v10')
-      const n = h.extractMinimum()
-      assert.strictEqual(n.key, 1)
-      assert.strictEqual(n.value, 'v1')
-      assert.strictEqual(h._size, 1)
-      assert.strictEqual(h._minimum.key, 10)
-      assert.strictEqual(h._minimum.value, 'v10')
+      const n1 = h.extractMinimum()
+      assert.strictEqual(n1.key, 1)
+      assert.strictEqual(n1.value, 'v1')
+      assert.strictEqual(h.size(), 1)
+      // the remaining node should be extractable
+      const n2 = h.extractMinimum()
+      assert.strictEqual(n2.key, 10)
+      assert.strictEqual(n2.value, 'v10')
     })
 
     it('should extract nodes in ascending order', function () {
@@ -86,19 +96,21 @@ describe('FibonacciHeap', function () {
       h.insert(1, 'v1')
       h.insert(3, 'v3')
       h.insert(2, 'v2')
-      // extract all nodes
-      let n
-      let l = h.extractMinimum()
-      let s = h._size
-      while (true) {
-        n = h.extractMinimum()
-        if (!n) { break }
-        assert(n.key > l.key)
-        assert.strictEqual(h._size, --s)
-        l = n
+      // extract all nodes and verify ascending order
+      const expected = [
+        { key: 1, value: 'v1' },
+        { key: 2, value: 'v2' },
+        { key: 3, value: 'v3' },
+        { key: 4, value: 'v4' },
+        { key: 5, value: 'v5' }
+      ]
+      for (const exp of expected) {
+        const n = h.extractMinimum()
+        assert.strictEqual(n.key, exp.key)
+        assert.strictEqual(n.value, exp.value)
       }
-      assert.strictEqual(h._size, 0)
-      assert(h._minimum === null)
+      assert.strictEqual(h.size(), 0)
+      assert.strictEqual(h.isEmpty(), true)
     })
   })
 
@@ -107,8 +119,8 @@ describe('FibonacciHeap', function () {
       const h = new FibonacciHeap()
       const n = h.insert(1, 'v1')
       h.remove(n)
-      assert.strictEqual(h._size, 0)
-      assert(h._minimum === null)
+      assert.strictEqual(h.size(), 0)
+      assert.strictEqual(h.isEmpty(), true)
     })
 
     it('should remove node with smaller key', function () {
@@ -119,7 +131,19 @@ describe('FibonacciHeap', function () {
       h.insert(5, 'v5')
       h.insert(4, 'v4')
       h.remove(n)
-      assert.strictEqual(h._size, 4)
+      assert.strictEqual(h.size(), 4)
+      // remaining nodes should extract in ascending order: 4, 5, 10, 20
+      const expected = [
+        { key: 4, value: 'v4' },
+        { key: 5, value: 'v5' },
+        { key: 10, value: 'v10' },
+        { key: 20, value: 'v20' }
+      ]
+      for (const exp of expected) {
+        const node = h.extractMinimum()
+        assert.strictEqual(node.key, exp.key)
+        assert.strictEqual(node.value, exp.value)
+      }
     })
 
     it('should remove node with largest key', function () {
@@ -130,11 +154,23 @@ describe('FibonacciHeap', function () {
       h.insert(5, 'v5')
       h.insert(4, 'v4')
       h.remove(n)
-      assert.strictEqual(h._size, 4)
+      assert.strictEqual(h.size(), 4)
+      // remaining nodes should extract in ascending order: 1, 4, 5, 10
+      const expected = [
+        { key: 1, value: 'v1' },
+        { key: 4, value: 'v4' },
+        { key: 5, value: 'v5' },
+        { key: 10, value: 'v10' }
+      ]
+      for (const exp of expected) {
+        const node = h.extractMinimum()
+        assert.strictEqual(node.key, exp.key)
+        assert.strictEqual(node.value, exp.value)
+      }
     })
   })
 
-  it('should check whether emtpy', function () {
+  it('should check whether empty', function () {
     const h = new FibonacciHeap()
     assert.strictEqual(h.isEmpty(), true)
     assert.strictEqual(h.size(), 0)

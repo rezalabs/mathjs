@@ -90,10 +90,13 @@ function assertValidQRDecomposition (A, Q, R) {
   }
 
   const raw = math.qr._denseQRimpl(Array.isArray(A) ? math.matrix(A) : A)
+  const rawR = raw.R
+  const rawRows = rawR.size()[0]
+  const rawCols = rawR.size()[1] || 0
 
-  for (let i = 0; i < raw.R._data.length; ++i) {
-    for (let j = 0; j < i && j < (raw.R._data[0] || []).length; ++j) {
-      approxEqual(raw.R._data[i][j], 0, 1e-10)
+  for (let i = 0; i < rawRows; ++i) {
+    for (let j = 0; j < i && j < rawCols; ++j) {
+      approxEqual(rawR.get([i, j]), 0, 1e-10)
     }
   }
 }

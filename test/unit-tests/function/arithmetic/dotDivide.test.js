@@ -169,7 +169,7 @@ describe('dotDivide', function () {
       const a = math.sparse([[1, 2], [0, 4]])
       const b = math.sparse([[5, 0], [7, 8]])
       const result = dotDivide(a, b)
-      const isSparseMatrix = !!(result._values && result._index && result._ptr)
+      const isSparseMatrix = !!result.isSparseMatrix
       assert.strictEqual(isSparseMatrix, true)
       approxDeepEqual(result, math.sparse([[1 / 5, Infinity], [0, 4 / 8]]))
     })

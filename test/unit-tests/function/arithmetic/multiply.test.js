@@ -389,24 +389,24 @@ describe('multiply', function () {
       ])
 
       let r = multiply(m, 3)
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._data, [[6, 0], [12, 0]])
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.valueOf(), [[6, 0], [12, 0]])
 
       r = multiply(m, math.complex(3, 3))
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._data, [[math.complex(6, 6), math.complex(0, 0)], [math.complex(12, 12), math.complex(0, 0)]])
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.valueOf(), [[math.complex(6, 6), math.complex(0, 0)], [math.complex(12, 12), math.complex(0, 0)]])
 
       r = multiply(m, math.bignumber(3))
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._data, [[math.bignumber(6), math.bignumber(0)], [math.bignumber(12), math.bignumber(0)]])
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.valueOf(), [[math.bignumber(6), math.bignumber(0)], [math.bignumber(12), math.bignumber(0)]])
 
       r = multiply(m, true)
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._data, [[2, 0], [4, 0]])
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.valueOf(), [[2, 0], [4, 0]])
 
       r = multiply(m, false)
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._data, [[0, 0], [0, 0]])
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.valueOf(), [[0, 0], [0, 0]])
     })
 
     it('should multiply matrix x matrix with zeros', function () {
@@ -616,34 +616,24 @@ describe('multiply', function () {
       const m = math.matrix([[2, 0], [4, 0]], 'sparse')
 
       let r = multiply(m, 3)
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._values, [6, 12])
-      assert.deepStrictEqual(r._index, m._index)
-      assert.deepStrictEqual(r._ptr, m._ptr)
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.toArray(), [[6, 0], [12, 0]])
 
       r = multiply(m, math.complex(3, 3))
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._values, [math.complex(6, 6), math.complex(12, 12)])
-      assert.deepStrictEqual(r._index, m._index)
-      assert.deepStrictEqual(r._ptr, m._ptr)
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.toArray(), [[math.complex(6, 6), math.complex(0, 0)], [math.complex(12, 12), math.complex(0, 0)]])
 
       r = multiply(m, math.bignumber(3))
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._values, [math.bignumber(6), math.bignumber(12)])
-      assert.deepStrictEqual(r._index, m._index)
-      assert.deepStrictEqual(r._ptr, m._ptr)
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.toArray(), [[math.bignumber(6), math.bignumber(0)], [math.bignumber(12), math.bignumber(0)]])
 
       r = multiply(m, true)
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._values, [2, 4])
-      assert.deepStrictEqual(r._index, m._index)
-      assert.deepStrictEqual(r._ptr, m._ptr)
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.toArray(), [[2, 0], [4, 0]])
 
       r = multiply(m, false)
-      assert.deepStrictEqual(r._size, m._size)
-      assert.deepStrictEqual(r._values, [])
-      assert.deepStrictEqual(r._index, [])
-      assert.deepStrictEqual(r._ptr, [0, 0, 0])
+      assert.deepStrictEqual(r.size(), m.size())
+      assert.deepStrictEqual(r.toArray(), [[0, 0], [0, 0]])
     })
 
     it('should multiply matrix x matrix with zeros', function () {

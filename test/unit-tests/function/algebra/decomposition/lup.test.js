@@ -379,7 +379,7 @@ describe('lup', function () {
     // loop rows
     for (let i = 0, l = p.length; i < l; i++) {
       // swap row
-      data[p[i]] = identity._data[i]
+      data[p[i]] = identity.toArray()[i]
     }
     return data
   }

@@ -1107,18 +1107,12 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     // vars
     let i, j
     // Determine the zero value. Use explicit datatype if available,
-    // otherwise default to 0. Only override for boolean and bigint
-    // (the types whose natural zero values differ from numeric 0).
+    // otherwise infer from the first stored value.
     let zero
     if (datatype) {
       zero = _getZero(datatype)
     } else if (values && values.length > 0) {
-      const v0type = typeOf(values[0])
-      if (v0type === 'boolean' || v0type === 'bigint') {
-        zero = _getZero(v0type)
-      } else {
-        zero = 0
-      }
+      zero = _getZero(typeOf(values[0]))
     } else {
       zero = 0
     }
