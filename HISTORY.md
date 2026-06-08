@@ -10,6 +10,13 @@
 - Fix: TypeScript type for `unit()` second argument now accepts `string | Unit`
   instead of only `string`. Also separated the dimensionless overload from the
   valued overload for improved type safety.
+- Fix: `schur` decomposition returned the input matrix unchanged (no
+  actual decomposition) for orthogonal matrices and converged slowly or
+  incorrectly for many others. The original implementation used the
+  unshifted QR algorithm without Hessenberg reduction, which completely
+  stalls on orthogonal matrices. Replaced with a proper implementation:
+  Hessenberg reduction via Householder reflections followed by the
+  Francis QR algorithm with Wilkinson shifts.
 - Fix: Matrix operations (add, subtract, multiply, dotMultiply, divide, etc.)
   rejecting a `BigNumber` scalar when the matrix was typed as `'number'`.
   The matrix algorithms now fall back to mixed-type callbacks when the scalar
