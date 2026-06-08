@@ -7,6 +7,9 @@
 - Fix: `splitUnit` dot notation `(1m).splitUnit(["ft","in"])` in the
   expression parser. The parser passed a `DenseMatrix` to the method
   which expected a plain array.
+- Fix: TypeScript type for `unit()` second argument now accepts `string | Unit`
+  instead of only `string`. Also separated the dimensionless overload from the
+  valued overload for improved type safety.
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

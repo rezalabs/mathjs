@@ -1863,12 +1863,27 @@ Units examples
     expectTypeOf(math.unit(math.fraction(5, 2), 'cm')).toExtend<Unit>()
     expectTypeOf(math.unit(math.complex(5, 0), 'cm')).toExtend<Unit>()
 
+    // Test unit function with a valueless Unit as the second argument
+    const cmUnit = math.unit('cm')
+    expectTypeOf(math.unit(5, cmUnit)).toExtend<Unit>()
+    expectTypeOf(math.unit(math.bignumber(5), cmUnit)).toExtend<Unit>()
+    expectTypeOf(math.unit(math.fraction(5, 2), cmUnit)).toExtend<Unit>()
+    expectTypeOf(math.unit(math.complex(5, 0), cmUnit)).toExtend<Unit>()
+
     // Test unit function with just MathNumericType (optional unit parameter)
     expectTypeOf(math.unit(5)).toExtend<Unit>()
     expectTypeOf(math.unit(math.bignumber(5))).toExtend<Unit>()
     expectTypeOf(math.unit(math.fraction(5, 2))).toExtend<Unit>()
-    // Shouldn't this also work? Currently it does not.
-    // expectTypeOf(math.unit(math.complex(5, 0))).toExtend<Unit>()
+    // Complex without a valueless unit is not supported at runtime.
+    // @ts-expect-error
+    assert.throws(() => math.unit(math.complex(5, 0)))
+    // bigint values are auto-converted to number at runtime, but the
+    // TypeScript overloads deliberately exclude bigint from the
+    // value parameter since typed-function doesn't list it explicitly.
+    // @ts-expect-error
+    math.unit(5n)
+    // @ts-expect-error
+    math.unit(5n, 'cm')
 
     // Test unit function with just MathCollection
     expectTypeOf(math.unit(math.matrix([1, 2, 3]))).toExtend<Unit[]>()

@@ -941,10 +941,15 @@ export interface MathJsInstance extends MathJsFactory {
   unit(unit: Unit): Unit
   /**
    * @param value The value of the unit to be created
-   * @param unit The unit to be created
+   * @param unit The valueless unit to be created
    * @returns The created unit
    */
-  unit(value: MathNumericType, unit?: string): Unit
+  unit(value: number | BigNumber | Fraction | Complex, unit: string | Unit): Unit
+  /**
+   * @param value The dimensionless value
+   * @returns A dimensionless unit
+   */
+  unit(value: number | BigNumber | Fraction): Unit
   unit(value: MathCollection): Unit[]
 
   /*************************************************************************
@@ -5137,7 +5142,8 @@ export interface MathJsChain<TValue> {
    * @param unit The unit to be created
    */
   unit(this: MathJsChain<string>, unit?: string): MathJsChain<Unit>
-  unit(this: MathJsChain<MathNumericType>, unit?: string): MathJsChain<Unit>
+  unit(this: MathJsChain<number | BigNumber | Fraction | Complex>, unit: string | Unit): MathJsChain<Unit>
+  unit(this: MathJsChain<number | BigNumber | Fraction>): MathJsChain<Unit>
   unit(this: MathJsChain<MathCollection>): MathJsChain<Unit[]>
 
   /*************************************************************************
