@@ -45,12 +45,17 @@ export const createMatAlgo12xSfs = /* #__PURE__ */ factory(name, dependencies, (
 
     // process data types
     if (typeof adt === 'string') {
-      // datatype
-      dt = adt
-      // convert b to the same datatype
-      b = typed.convert(b, dt)
-      // callback
-      cf = typed.find(callback, [dt, dt])
+      // Try a fast homogeneous path.
+      let homogeneous = adt
+      try {
+        b = typed.convert(b, homogeneous)
+      } catch (_e) {
+        homogeneous = undefined
+      }
+      if (homogeneous) {
+        dt = homogeneous
+        cf = typed.find(callback, [dt, dt])
+      }
     }
 
     // result arrays

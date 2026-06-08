@@ -49,16 +49,19 @@ export const createMatAlgo11xS0s = /* #__PURE__ */ factory(name, dependencies, (
 
     // process data types
     if (typeof adt === 'string') {
-      // datatype
-      dt = adt
-      // find signature that matches (dt, dt)
-      eq = typed.find(equalScalar, [dt, dt])
-      // convert 0 to the same datatype
-      zero = typed.convert(0, dt)
-      // convert b to the same datatype
-      b = typed.convert(b, dt)
-      // callback
-      cf = typed.find(callback, [dt, dt])
+      // Try a fast homogeneous path.
+      let homogeneous = adt
+      try {
+        eq = typed.find(equalScalar, [homogeneous, homogeneous])
+        zero = typed.convert(0, homogeneous)
+        b = typed.convert(b, homogeneous)
+      } catch (_e) {
+        homogeneous = undefined
+      }
+      if (homogeneous) {
+        dt = homogeneous
+        cf = typed.find(callback, [dt, dt])
+      }
     }
 
     // result arrays

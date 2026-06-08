@@ -33,12 +33,21 @@ export const createMatAlgo14xDs = /* #__PURE__ */ factory(name, dependencies, ({
 
     // process data types
     if (typeof adt === 'string') {
-      // datatype
-      dt = adt
-      // convert b to the same datatype
-      b = typed.convert(b, dt)
-      // callback
-      cf = typed.find(callback, [dt, dt])
+      // Try a fast homogeneous path: convert the scalar to match
+      // the matrix datatype so we can use a type-specific callback.
+      let homogeneous = adt
+      try {
+        b = typed.convert(b, homogeneous)
+      } catch (_e) {
+        // Conversion failed (e.g., BigNumber cannot be losslessly
+        // converted to number). Fall back to the full typed callback
+        // which handles mixed types via its own auto-conversion.
+        homogeneous = undefined
+      }
+      if (homogeneous) {
+        dt = homogeneous
+        cf = typed.find(callback, [dt, dt])
+      }
     }
 
     // populate cdata, iterate through dimensions
