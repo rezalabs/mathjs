@@ -14,6 +14,11 @@
   rejecting a `BigNumber` scalar when the matrix was typed as `'number'`.
   The matrix algorithms now fall back to mixed-type callbacks when the scalar
   cannot be losslessly converted to the matrix datatype.
+- Fix: `SparseMatrix` could not store `false` or `0n` (BigInt) values because
+  the zero value was always `0`. The matrix now auto-detects the datatype
+  from the input (boolean, bigint) and uses the correct zero value (`false`,
+  `0n`) for storage and reconstruction. Also added explicit `_getZero()`
+  helper for all datatypes.
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

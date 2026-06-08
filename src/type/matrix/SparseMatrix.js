@@ -16,6 +16,26 @@ const dependencies = [
 
 export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencies, ({ typed, equalScalar, Matrix }) => {
   /**
+   * Get the zero value for a given sparse matrix datatype.
+   * Tries typed.convert first (works for numeric types like number,
+   * BigNumber, Complex, Fraction). Falls back to known non-numeric
+   * zero values when conversion fails (e.g., boolean -> false,
+   * bigint -> 0n).
+   */
+  function _getZero (datatype) {
+    try {
+      return typed.convert(0, datatype)
+    } catch (_e) {
+      switch (datatype) {
+        case 'boolean': return false
+        case 'bigint': return 0n
+        case 'string': return ''
+        default: return 0
+      }
+    }
+  }
+
+  /**
    * Sparse Matrix implementation. This type (currently) implements 2D
    * matrices only via the format known as
    * [Compressed Column Storage](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)).
@@ -89,24 +109,35 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     matrix._values = []
     matrix._index = []
     matrix._ptr = []
-    matrix._datatype = datatype
     // discover rows & columns, do not use math.size() to avoid looping array twice
     const rows = data.length
     let columns = 0
+
+    // Track whether the datatype was explicitly provided by the caller.
+    const explicit = isString(datatype)
 
     // equal signature to use
     let eq = equalScalar
     // zero value
     let zero = 0
 
+    // Auto-detect the datatype from the input when none is explicitly
+    // specified. This ensures the correct zero value is used for types
+    // like boolean (false) and bigint (0n) rather than defaulting to 0.
+    if (!explicit && rows > 0) {
+      const detected = getArrayDataType(data, typeOf)
+      if (detected && detected !== 'mixed') {
+        datatype = detected
+      }
+    }
+
     if (isString(datatype)) {
       // find signature that matches (datatype, datatype)
       eq = typed.find(equalScalar, [datatype, datatype]) || equalScalar
-      // convert 0 to the same datatype
-      zero = typed.convert(0, datatype)
+      // zero value for this datatype
+      zero = _getZero(datatype)
     }
-
-    // check we have rows (empty array)
+    matrix._datatype = explicit ? datatype : undefined
     if (rows > 0) {
       // column index
       let j = 0
@@ -510,8 +541,8 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     if (isString(this._datatype)) {
       // find signature that matches (datatype, datatype)
       eq = typed.find(equalScalar, [this._datatype, this._datatype]) || equalScalar
-      // convert 0 to the same datatype
-      zero = typed.convert(0, this._datatype)
+      // zero value for this datatype
+      zero = _getZero(this._datatype)
     }
 
     // check we need to resize matrix
@@ -635,7 +666,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       // find signature that matches (datatype, datatype)
       eq = typed.find(equalScalar, [matrix._datatype, matrix._datatype]) || equalScalar
       // convert 0 to the same datatype
-      zero = typed.convert(0, matrix._datatype)
+      zero = _getZero(matrix._datatype)
       // convert value to the same datatype
       value = typed.convert(value, matrix._datatype)
     }
@@ -912,7 +943,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
       // find signature that matches (datatype, datatype)
       eq = typed.find(equalScalar, [matrix._datatype, matrix._datatype]) || equalScalar
       // convert 0 to the same datatype
-      zero = typed.convert(0, matrix._datatype)
+      zero = _getZero(matrix._datatype)
     }
 
     // invoke callback
@@ -1055,7 +1086,7 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
    * @returns {Array} array
    */
   SparseMatrix.prototype.toArray = function () {
-    return _toArray(this._values, this._index, this._ptr, this._size, true)
+    return _toArray(this._values, this._index, this._ptr, this._size, true, this._datatype)
   }
 
   /**
@@ -1064,10 +1095,10 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
    * @returns {Array} array
    */
   SparseMatrix.prototype.valueOf = function () {
-    return _toArray(this._values, this._index, this._ptr, this._size, false)
+    return _toArray(this._values, this._index, this._ptr, this._size, false, this._datatype)
   }
 
-  function _toArray (values, index, ptr, size, copy) {
+  function _toArray (values, index, ptr, size, copy, datatype) {
     // rows and columns
     const rows = size[0]
     const columns = size[1]
@@ -1075,10 +1106,26 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     const a = []
     // vars
     let i, j
+    // Determine the zero value. Use explicit datatype if available,
+    // otherwise default to 0. Only override for boolean and bigint
+    // (the types whose natural zero values differ from numeric 0).
+    let zero
+    if (datatype) {
+      zero = _getZero(datatype)
+    } else if (values && values.length > 0) {
+      const v0type = typeOf(values[0])
+      if (v0type === 'boolean' || v0type === 'bigint') {
+        zero = _getZero(v0type)
+      } else {
+        zero = 0
+      }
+    } else {
+      zero = 0
+    }
     // initialize array
     for (i = 0; i < rows; i++) {
       a[i] = []
-      for (j = 0; j < columns; j++) { a[i][j] = 0 }
+      for (j = 0; j < columns; j++) { a[i][j] = zero }
     }
 
     // loop columns
@@ -1287,8 +1334,8 @@ export const createSparseMatrixClass = /* #__PURE__ */ factory(name, dependencie
     if (isString(datatype)) {
       // find signature that matches (datatype, datatype)
       eq = typed.find(equalScalar, [datatype, datatype]) || equalScalar
-      // convert 0 to the same datatype
-      zero = typed.convert(0, datatype)
+      // zero value for this datatype
+      zero = _getZero(datatype)
     }
 
     const kSuper = k > 0 ? k : 0
