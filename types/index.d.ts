@@ -915,7 +915,7 @@ export interface MathJsInstance extends MathJsFactory {
    * @param parts An array of strings or valueless units
    * @returns An array of units
    */
-  splitUnit(unit: Unit, parts: Unit[]): Unit[]
+  splitUnit(unit: Unit, parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>): Unit[]
 
   /**
    * Create a string or convert any object into a string. Elements of
@@ -4497,7 +4497,7 @@ export interface Unit {
   formatUnits(): string
   format(options: FormatOptions): string
   simplify(): Unit
-  splitUnit(parts: ReadonlyArray<string | Unit>): Unit[]
+  splitUnit(parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>): Unit[]
 
   units: UnitComponent[]
   dimensions: number[]
@@ -5119,7 +5119,7 @@ export interface MathJsChain<TValue> {
    * unit.
    * @param parts An array of strings or valueless units
    */
-  splitUnit(this: MathJsChain<Unit>, parts: Unit[]): MathJsChain<Unit[]>
+  splitUnit(this: MathJsChain<Unit>, parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>): MathJsChain<Unit[]>
 
   /**
    * Create a string or convert any object into a string. Elements of

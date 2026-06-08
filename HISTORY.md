@@ -4,6 +4,9 @@
 
 - Fix: improve TypeScript inference for `multiply` and `dotMultiply` with
   units and collections.
+- Fix: `splitUnit` dot notation `(1m).splitUnit(["ft","in"])` in the
+  expression parser. The parser passed a `DenseMatrix` to the method
+  which expected a plain array.
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

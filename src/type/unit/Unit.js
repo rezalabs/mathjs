@@ -1309,7 +1309,7 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
   /**
    * Returns an array of units whose sum is equal to this unit
    * @memberof Unit
-   * @param {Array} [parts] An array of strings or valueless units.
+   * @param {Array | Matrix} [parts] An array of strings or valueless units.
    *
    *   Example:
    *
@@ -1320,6 +1320,11 @@ export const createUnitClass = /* #__PURE__ */ factory(name, dependencies, ({
    * @return {Array} An array of units.
    */
   Unit.prototype.splitUnit = function (parts) {
+    // The expression parser may pass a DenseMatrix; normalize to a plain
+    // array to ensure indexed access and .length work correctly.
+    if (!Array.isArray(parts) && typeof parts.toArray === 'function') {
+      parts = parts.toArray()
+    }
     let x = this.clone()
     const ret = []
     for (let i = 0; i < parts.length; i++) {

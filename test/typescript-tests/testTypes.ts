@@ -28,6 +28,7 @@ import {
   isSymbolNode,
   LUDecomposition,
   MapLike,
+  Matrix,
   MathArray,
   MathCollection,
   MathJsChain,
@@ -38,7 +39,6 @@ import {
   MathScalarType,
   MathScope,
   MathType,
-  Matrix,
   Node,
   nullishDependencies,
   ObjectNode,
@@ -1957,6 +1957,22 @@ Units examples
 
   // units can be split into other units
   math.unit('1 m').splitUnit(['ft', 'in'])
+  math.unit('1 m').splitUnit(math.matrix(['ft', 'in']) as unknown as Matrix<string>)
+  math.splitUnit(math.unit('1 m'), ['ft', 'in'])
+  math.splitUnit(math.unit('1 m'), math.matrix(['ft', 'in']) as unknown as Matrix<string>)
+
+  // verify splitUnit result is Unit[]
+  const splitResult = math.splitUnit(math.unit('1 m'), ['ft', 'in'])
+  expectTypeOf(splitResult).toMatchTypeOf<math.Unit[]>()
+  expectTypeOf(splitResult[0]).toMatchTypeOf<math.Unit>()
+
+  // runtime: (1m).splitUnit(["ft", "in"]) via dot notation — was broken before fix
+  const splitDotResult = math.evaluate('(1 m).splitUnit(["ft", "in"])') as math.MathCollection
+  expectTypeOf(splitDotResult).toMatchTypeOf<math.MathCollection>()
+  assert.deepStrictEqual(
+    splitDotResult,
+    math.splitUnit(math.unit('1 m'), ['ft', 'in'])
+  )
 }
 
 /**
