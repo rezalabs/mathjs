@@ -2,6 +2,12 @@
 
 # unpublished changes since 15.2.0
 
+- Fix: comparison operators (`larger`, `smaller`, `largerEq`, `smallerEq`,
+  `compare`) gave misleading error messages when `null` or `undefined`
+  appeared on the left side (e.g., `null > 1` blamed `number` instead
+  of `null`). The matrix-scalar signatures used `any` for the scalar
+  type, allowing `null` to match the left position and pushing the
+  error to the right argument. Replaced with explicit scalar types.
 - Fix: `rationalize` threw "non-integer exponent" on expressions like
   `1/(x^-2)` instead of simplifying to `x^2`. The simplification rules
   were missing a general rule for standalone negative exponents

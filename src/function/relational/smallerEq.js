@@ -71,6 +71,7 @@ export const createSmallerEq = /* #__PURE__ */ factory(name, dependencies, ({ ty
     },
     compareUnits,
     matrixAlgorithmSuite({
+      scalar: 'boolean | number | bigint | BigNumber | Fraction | Complex | Unit',
       SS: matAlgo07xSSf,
       DS: matAlgo03xDSf,
       Ss: matAlgo12xSfs

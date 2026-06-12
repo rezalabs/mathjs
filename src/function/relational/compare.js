@@ -97,6 +97,7 @@ export const createCompare = /* #__PURE__ */ factory(name, dependencies, ({ type
     },
     compareUnits,
     matrixAlgorithmSuite({
+      scalar: 'boolean | number | bigint | BigNumber | Fraction | Complex | Unit',
       SS: matAlgo05xSfSf,
       DS: matAlgo03xDSf,
       Ss: matAlgo12xSfs
