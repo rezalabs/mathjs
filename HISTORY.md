@@ -2,6 +2,11 @@
 
 # unpublished changes since 15.2.0
 
+- Fix: `rationalize` threw "non-integer exponent" on expressions like
+  `1/(x^-2)` instead of simplifying to `x^2`. The simplification rules
+  were missing a general rule for standalone negative exponents
+  (`n1^-n2 -> 1/n1^n2`), so `x^-2` was never converted to `1/x^2`
+  before polynomial validation.
 - Fix: improve TypeScript inference for `multiply` and `dotMultiply` with
   units and collections.
 - Fix: `splitUnit` dot notation `(1m).splitUnit(["ft","in"])` in the

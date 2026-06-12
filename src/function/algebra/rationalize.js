@@ -292,6 +292,7 @@ export const createRationalize = /* #__PURE__ */ factory(name, dependencies, ({
       { l: 'n*(n1^-1)', r: 'n/n1' },
       { l: 'n*n1^-n2', r: 'n/n1^n2' },
       { l: 'n1^-1', r: '1/n1' },
+      { l: 'n1^-n2', r: '1/n1^n2' },
       { l: 'n*(n1/n2)', r: '(n*n1)/n2' },
       { l: '1*n', r: 'n' }]
 

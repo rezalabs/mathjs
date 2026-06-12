@@ -48,7 +48,6 @@ describe('rationalize', function () {
     assert.throws(function () { math.rationalize('x^2.5 - 2*x + 3') }, /There is a non-integer exponent/)
     assert.throws(function () { math.rationalize('x^x') }, /There is a non-integer exponent/)
     assert.throws(function () { math.rationalize('x^2.5') }, /There is a non-integer exponent/)
-    assert.throws(function () { math.rationalize('1/(x^(-2))') }, /There is a non-integer exponent/)
   })
 
   it('calling error', function () {
@@ -101,6 +100,10 @@ describe('rationalize', function () {
     assert.strictEqual(stri(math.rationalize('1/(0.1x+1)+1')), '(0.1*x+2)/(0.1*x+1)')
     assert.strictEqual(stri(math.rationalize('1/x^2+1')), '(x^2+1)/x^2')
     assert.strictEqual(stri(math.rationalize('1/(x/10+1)+1')), '(0.1*x+2)/(0.1*x+1)')
+    assert.strictEqual(stri(math.rationalize('1/(x^-1)')), 'x')
+    assert.strictEqual(stri(math.rationalize('1/(x^-2)')), 'x^2')
+    assert.strictEqual(stri(math.rationalize('1/(x^-3)')), 'x^3')
+    assert.strictEqual(stri(math.rationalize('2/(x^-2)')), '2*x^2')
   })
 
   it('processing 2 variable expressions', function () {
