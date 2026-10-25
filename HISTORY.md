@@ -17,6 +17,11 @@
   simplified the first child of every trivial multi-child operator twice,
   causing exponential work on deep addition and multiplication trees. The
   first child is now simplified once, after the child count is known.
+- Fix: bound variables in a function definition are now truly local. Assigning
+  to a function parameter inside the body, for example
+  `f(x) = [x = x + 1, k = k - 1]`, no longer writes the parameter into the
+  caller's scope, and later reads of that parameter in the body see the
+  assigned value. Free variables still read and write the caller's scope.
 - Fix: comparison operators (`larger`, `smaller`, `largerEq`, `smallerEq`,
   `compare`) gave misleading error messages when `null` or `undefined`
   appeared on the left side (e.g., `null > 1` blamed `number` instead

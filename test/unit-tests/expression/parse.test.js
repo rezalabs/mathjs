@@ -1458,6 +1458,40 @@ describe('parse', function () {
       assert.strictEqual(scope.g(4, 5), 1024)
     })
 
+    it('should keep bound variables local to the function', function () {
+      const scope = new Map([['x', 3], ['k', 5]])
+      const f = parseAndEval('f(x) = [x = x + 1, k = k - 1]', scope)
+
+      assert.deepStrictEqual(f(0), math.matrix([1, 4]))
+      assert.strictEqual(scope.get('x'), 3)
+      assert.strictEqual(scope.get('k'), 4)
+
+      // Renaming the bound variable must not change the observable behavior
+      const g = parseAndEval('g(y) = [y = y + 1, k = k - 1]', scope)
+
+      assert.deepStrictEqual(g(0), math.matrix([1, 3]))
+      assert.strictEqual(scope.get('x'), 3)
+      assert.strictEqual(scope.has('y'), false)
+    })
+
+    it('should make a parameter assignment visible to later reads in the function body', function () {
+      const scope = new Map([['x', 3]])
+      const f = parseAndEval('f(x) = [x = x + 1, x]', scope)
+
+      assert.deepStrictEqual(f(0), math.matrix([1, 1]))
+      assert.strictEqual(scope.get('x'), 3)
+    })
+
+    it('should keep nested function parameter assignments local to the enclosing call', function () {
+      const scope = new Map([['x', 3]])
+      parseAndEval('f(x) = (g(y) = (x = x + 1) + y)', scope)
+      const g = scope.get('f')(10)
+
+      assert.strictEqual(g(0), 11)
+      assert.strictEqual(scope.get('x'), 3)
+      assert.strictEqual(scope.has('y'), false)
+    })
+
     it('should correctly evaluate variables in assigned functions', function () {
       const scope = {}
       assert.strictEqual(parseAndEval('a = 3', scope), 3)

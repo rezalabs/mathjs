@@ -51,6 +51,14 @@ describe('FunctionAssignmentNode', function () {
     assert.strictEqual(scope.f(5), 7)
   })
 
+  it('should keep a bound variable local and visible to later reads', function () {
+    const scope = { x: 3 }
+    const f = math.parse('f(x) = [x = x + 1, x]').evaluate(scope)
+
+    assert.deepStrictEqual(f(0), math.matrix([1, 1]))
+    assert.strictEqual(scope.x, 3)
+  })
+
   it('should compile a typed FunctionAssignmentNode', function () {
     const a = new ConstantNode(2)
     const x = new SymbolNode('x')

@@ -6,6 +6,7 @@ import { forEach, join } from '../../utils/array.js'
 import { toSymbol } from '../../utils/latex.js'
 import { getPrecedence } from '../operators.js'
 import { factory } from '../../utils/factory.js'
+import { createSubScope } from '../../utils/scope.js'
 
 const name = 'FunctionAssignmentNode'
 const dependencies = [
@@ -113,7 +114,16 @@ export const createFunctionAssignmentNode = /* #__PURE__ */ factory(name, depend
             childArgs[params[i]] = arguments[i]
           }
 
-          return evalExpr(scope, childArgs, context)
+          // Partition the scope so reads and writes of function parameters
+          // resolve against the temporary child arguments, not the outer
+          // scope. Without this, assigning to a parameter inside the body
+          // (like `f(x) = (x = x + 1)`) leaks into the caller's scope while
+          // plain reads of that parameter stay local.
+          const functionScope = params.length > 0
+            ? createSubScope(scope, childArgs)
+            : scope
+
+          return evalExpr(functionScope, childArgs, context)
         }
         const fn = typed(name, signatures)
         fn.syntax = syntax
