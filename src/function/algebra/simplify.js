@@ -301,6 +301,13 @@ export const createSimplify = /* #__PURE__ */ factory(name, dependencies, (
     // pose a performance problem.
     simplifyConstant, // First: before collecting like terms
 
+    // Distributing a power over the unit factor left by 'n/n1 -> n*n1^-1'
+    // produces 1^n. Without this rule the factor accumulates a larger exponent
+    // on every pass and simplification never converges. This runs after
+    // simplifyConstant so non-finite constant powers like 1^Infinity are
+    // evaluated first. See #3693.
+    { l: '1^n', r: '1' },
+
     // collect like terms
     {
       s: 'n+n -> 2*n',

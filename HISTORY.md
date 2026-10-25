@@ -8,6 +8,11 @@
   ignored arguments beyond the first two (e.g. `and(true, true, false)`
   returned `true`). They now throw an `ArgumentsError` reporting the
   expected two arguments, thrown before any argument is evaluated.
+- Fix: `simplify` looping on symbolic powers of reciprocals like
+  `(1/(x*(y-1)))^(1/(y-1))`. The rewrite `n/n1 -> n*n1^-1` left a unit factor,
+  power distribution turned it into `1^n`, and the exponent grew on every pass.
+  Added `1^n -> 1` after constant folding, so non-finite powers like
+  `1^Infinity` still evaluate to `NaN` (#3693).
 - Fix: comparison operators (`larger`, `smaller`, `largerEq`, `smallerEq`,
   `compare`) gave misleading error messages when `null` or `undefined`
   appeared on the left side (e.g., `null > 1` blamed `number` instead

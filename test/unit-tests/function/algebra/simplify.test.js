@@ -387,6 +387,42 @@ describe('simplify', function () {
     simplifyAndCompare('8 - n', '8 - n')
   })
 
+  it('should remove unit factors raised to a power', function () {
+    simplifyAndCompare('1^x', '1')
+    simplifyAndCompare('1^(2*x)', '1')
+    simplifyAndCompare('1^x*y', 'y')
+    simplifyAndCompare('(1*x)^y', 'x^y')
+    simplifyAndCompare('(x/2)^y', 'x^y/2^y')
+  })
+
+  it('should preserve non-finite powers of one', function () {
+    for (const expression of ['1^Infinity', '1^(-Infinity)', '1^NaN', '1^(1/0)']) {
+      assert.strictEqual(math.simplify(expression).toString(), 'NaN')
+    }
+  })
+
+  it('should terminate when simplifying symbolic powers of reciprocals', function () {
+    const expressions = [
+      ['(1/(x*(y-1)))^(1/(y-1))', '(1/x/(y-1))^(1/(y-1))'],
+      ['(1/(x*y))^z', '(1/x/y)^z'],
+      ['(2/(x*y))^z', '2^z*(1/x/y)^z'],
+      ['(1/(2*x))^y', '(1/2/x)^y'],
+      ['(1/(x*y*z))^w', '(1/y/z/x)^w']
+    ]
+    for (const [expression, expected] of expressions) {
+      let passes = 0
+      const rules = [node => {
+        // Fail a non-terminating rule cycle without hanging the test runner.
+        assert.ok(++passes < 20, 'Simplification did not converge: ' + expression)
+        return node
+      }, ...math.simplify.rules]
+      const simplified = math.simplify(expression, rules)
+      assert.strictEqual(simplified.toString(), math.parse(expected).toString())
+      const scope = { x: 2, y: 3, z: 0.5, w: 1.5 }
+      assert.ok(Math.abs(simplified.evaluate(scope) - math.evaluate(expression, scope)) < 1e-14)
+    }
+  })
+
   it('should handle non-existing functions like a pro', function () {
     simplifyAndCompare('foo(x)', 'foo(x)')
     simplifyAndCompare('foo(1)', 'foo(1)')
