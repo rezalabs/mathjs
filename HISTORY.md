@@ -13,6 +13,10 @@
   power distribution turned it into `1^n`, and the exponent grew on every pass.
   Added `1^n -> 1` after constant folding, so non-finite powers like
   `1^Infinity` still evaluate to `NaN` (#3693).
+- Fix: `rationalize` hanging on expressions like `(x+y+z)^3`. `simplifyCore`
+  simplified the first child of every trivial multi-child operator twice,
+  causing exponential work on deep addition and multiplication trees. The
+  first child is now simplified once, after the child count is known.
 - Fix: comparison operators (`larger`, `smaller`, `largerEq`, `smallerEq`,
   `compare`) gave misleading error messages when `null` or `undefined`
   appeared on the left side (e.g., `null > 1` blamed `number` instead

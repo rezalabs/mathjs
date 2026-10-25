@@ -1,5 +1,6 @@
 // test simplifyCore
 import assert from 'assert'
+import sinon from 'sinon'
 
 import math from '../../../../src/defaultInstance.js'
 
@@ -56,6 +57,45 @@ describe('simplifyCore', function () {
 
   it('should not alter order of multiplication when noncommutative', function () {
     testSimplifyCore('5*x*3', '5 * x * 3', {}, { context: { multiply: { commutative: false } } })
+  })
+
+  for (const { op, fn, constant, expected } of [
+    { op: '+', fn: 'add', constant: 1, expected: 15 },
+    { op: '*', fn: 'multiply', constant: 2, expected: 12288 }
+  ]) {
+    it(`should visit the innermost ${fn} subtree only once`, function () {
+      const inner = new math.OperatorNode(op, fn, [
+        new math.SymbolNode('x'),
+        new math.ConstantNode(constant)
+      ])
+      let node = inner
+      for (let depth = 1; depth < 12; depth++) {
+        node = new math.OperatorNode(op, fn, [
+          node, new math.ConstantNode(constant)
+        ])
+      }
+      const original = node.toString()
+      const traversal = sinon.spy(inner, 'forEach')
+      try {
+        const simplified = math.simplifyCore(node)
+        // Count traversal work instead of depending on a timing threshold.
+        assert.strictEqual(traversal.callCount, 1)
+        assert.strictEqual(simplified.compile().evaluate({ x: 3 }), expected)
+        assert.strictEqual(node.toString(), original)
+      } finally {
+        traversal.restore()
+      }
+    })
+  }
+
+  it('should still simplify single-child wrappers and preserve context', function () {
+    const node = math.parse('+((x + 0) * 1)')
+    const original = node.toString()
+    assert.strictEqual(math.simplifyCore(node).toString(), 'x')
+    assert.strictEqual(node.toString(), original)
+    testSimplifyCore('+(5*x*3)', '5 * x * 3', {}, {
+      context: { multiply: { commutative: false } }
+    })
   })
 
   it('should remove any trivial function', function () {

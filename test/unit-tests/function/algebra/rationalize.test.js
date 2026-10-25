@@ -117,6 +117,20 @@ describe('rationalize', function () {
     assert.strictEqual(stri(math.rationalize('(2x+1)^3/(x-2)^3')), '(8*x^3+12*x^2+6*x+1)/(x^3-6*x^2+12*x-8)')
   })
 
+  it('processing a multinomial power without exponential blowup', function () {
+    this.timeout(10000)
+    const expr = math.parse('(x+y+z)^3')
+    const rationalized = math.rationalize(expr)
+    for (const values of [
+      { x: 0, y: 0, z: 0 },
+      { x: 1, y: 2, z: 3 },
+      { x: -1, y: 2, z: -3 },
+      { x: 2, y: -3, z: 1 }
+    ]) {
+      assert.strictEqual(rationalized.evaluate(values), expr.evaluate(values))
+    }
+  })
+
   it('processing tougher expressions', function () {
     assert.strictEqual(stri(math.rationalize('2x/(x+2) - x/(x+1)')), 'x^2/(x^2+3*x+2)')
     assert.strictEqual(stri(math.rationalize('2x/( (2x-1) / (3x+2) ) - 5x/ ( (3x+4) / (2x^2-5) ) + 3')),
