@@ -1,6 +1,7 @@
 import { createBitAnd } from '../../function/bitwise/bitAnd.js'
 import { factory } from '../../utils/factory.js'
 import { isCollection } from '../../utils/is.js'
+import { checkArgumentCount } from './utils/checkArgumentCount.js'
 
 const name = 'bitAnd'
 const dependencies = ['typed', 'matrix', 'zeros', 'add', 'equalScalar', 'not', 'concat']
@@ -9,6 +10,7 @@ export const createBitAndTransform = /* #__PURE__ */ factory(name, dependencies,
   const bitAnd = createBitAnd({ typed, matrix, equalScalar, zeros, not, concat })
 
   function bitAndTransform (args, math, scope) {
+    checkArgumentCount(name, args, 2)
     const condition1 = args[0].compile().evaluate(scope)
     if (!isCollection(condition1)) {
       if (isNaN(condition1)) {

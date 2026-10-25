@@ -1,6 +1,7 @@
 import { createAnd } from '../../function/logical/and.js'
 import { factory } from '../../utils/factory.js'
 import { isCollection } from '../../utils/is.js'
+import { checkArgumentCount } from './utils/checkArgumentCount.js'
 
 const name = 'and'
 const dependencies = ['typed', 'matrix', 'zeros', 'add', 'equalScalar', 'not', 'concat']
@@ -9,6 +10,7 @@ export const createAndTransform = /* #__PURE__ */ factory(name, dependencies, ({
   const and = createAnd({ typed, matrix, equalScalar, zeros, not, concat })
 
   function andTransform (args, math, scope) {
+    checkArgumentCount(name, args, 2)
     const condition1 = args[0].compile().evaluate(scope)
     if (!isCollection(condition1) && !and(condition1, true)) {
       return false

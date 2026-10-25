@@ -2,6 +2,12 @@
 
 # unpublished changes since 15.2.0
 
+- Fix: the short-circuiting transforms `and`, `or`, `bitAnd`, `bitOr`, and
+  `nullish` crashed with a cryptic TypeError when called with fewer than two
+  arguments in the expression parser (e.g. `and(true)`), and silently
+  ignored arguments beyond the first two (e.g. `and(true, true, false)`
+  returned `true`). They now throw an `ArgumentsError` reporting the
+  expected two arguments, thrown before any argument is evaluated.
 - Fix: comparison operators (`larger`, `smaller`, `largerEq`, `smallerEq`,
   `compare`) gave misleading error messages when `null` or `undefined`
   appeared on the left side (e.g., `null > 1` blamed `number` instead

@@ -1,6 +1,7 @@
 import { createOr } from '../../function/logical/or.js'
 import { factory } from '../../utils/factory.js'
 import { isCollection } from '../../utils/is.js'
+import { checkArgumentCount } from './utils/checkArgumentCount.js'
 
 const name = 'or'
 const dependencies = ['typed', 'matrix', 'equalScalar', 'DenseMatrix', 'concat']
@@ -9,6 +10,7 @@ export const createOrTransform = /* #__PURE__ */ factory(name, dependencies, ({ 
   const or = createOr({ typed, matrix, equalScalar, DenseMatrix, concat })
 
   function orTransform (args, math, scope) {
+    checkArgumentCount(name, args, 2)
     const condition1 = args[0].compile().evaluate(scope)
     if (!isCollection(condition1) && or(condition1, false)) {
       return true

@@ -1,6 +1,7 @@
 import { createNullish } from '../../function/logical/nullish.js'
 import { factory } from '../../utils/factory.js'
 import { isCollection } from '../../utils/is.js'
+import { checkArgumentCount } from './utils/checkArgumentCount.js'
 
 const name = 'nullish'
 const dependencies = ['typed', 'matrix', 'size', 'flatten', 'deepEqual']
@@ -9,6 +10,7 @@ export const createNullishTransform = /* #__PURE__ */ factory(name, dependencies
   const nullish = createNullish({ typed, matrix, size, flatten, deepEqual })
 
   function nullishTransform (args, math, scope) {
+    checkArgumentCount(name, args, 2)
     const left = args[0].compile().evaluate(scope)
 
     // If left is not a collection and not nullish, short-circuit and return it
