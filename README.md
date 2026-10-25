@@ -1,11 +1,27 @@
-> **Fork of [josdejong/mathjs](https://github.com/josdejong/mathjs).** This fork adds TypeScript inference improvements for unit-vector multiplication. Install from GitHub: `npm install rezalabs/mathjs`
+# math.js
+
+> **Fork of [josdejong/mathjs](https://github.com/josdejong/mathjs).** This fork tracks upstream and adds correctness fixes plus TypeScript type improvements, listed under [Fork changes](#fork-changes). Install the latest release from GitHub: `npm install github:rezalabs/mathjs`
 
 ![math.js](https://raw.githubusercontent.com/josdejong/mathjs/develop/misc/img/mathjs.svg)
 
 Math.js is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with a large set of built-in functions and constants, and offers an integrated solution to work with different data types like numbers, big numbers, complex numbers, fractions, units, and matrices. Powerful and easy to use.
 
-[![License](https://img.shields.io/github/license/josdejong/mathjs.svg)](https://github.com/rezalabs/mathjs/blob/develop/LICENSE)
-[![GitHub last commit](https://img.shields.io/github/last-commit/rezalabs/mathjs/develop)](https://github.com/rezalabs/mathjs)
+[![License](https://img.shields.io/github/license/josdejong/mathjs.svg)](https://github.com/rezalabs/mathjs/blob/develop/LICENSE) [![GitHub last commit](https://img.shields.io/github/last-commit/rezalabs/mathjs/develop)](https://github.com/rezalabs/mathjs)
+
+## Fork changes
+
+This fork tracks [upstream mathjs](https://github.com/josdejong/mathjs) and carries the following changes on top of it.
+
+- Replace the `schur` decomposition with a Hessenberg reduction followed by the Francis QR algorithm, so orthogonal matrices decompose correctly instead of returning the input unchanged.
+- Make `simplify` terminate on symbolic powers of reciprocals such as `(1/(x*(y-1)))^(1/(y-1))` ([#3693](https://github.com/josdejong/mathjs/issues/3693)).
+- Make `rationalize` handle deep multinomial powers like `(x+y+z)^3` without exponential work, and convert standalone negative exponents such as `x^-2` to `1/x^2`.
+- Keep function parameters local to the function body, so assigning to a parameter no longer writes into the caller's scope.
+- Validate the argument count of the short-circuiting transforms `and`, `or`, `bitAnd`, `bitOr`, and `nullish`, so a wrong number of arguments throws an `ArgumentsError` before any argument is evaluated.
+- Report the offending argument for `null` and `undefined` in `larger`, `smaller`, `largerEq`, `smallerEq`, and `compare` instead of blaming the other side.
+- Store `false` and `0n` correctly in `SparseMatrix` by detecting the datatype from the input.
+- Accept a `BigNumber` scalar in matrix operations whose matrix is typed as `number`.
+- Support `splitUnit` dot notation in the expression parser, for example `(1 m).splitUnit(["ft", "in"])`.
+- Allow `unit()` to take a `Unit` as its second argument, and improve TypeScript inference for multiplying units with collections.
 
 ## Features
 
@@ -23,18 +39,21 @@ Math.js is an extensive math library for JavaScript and Node.js. It features a f
 
 Math.js can be used in both node.js and in the browser.
 
-Install this fork from GitHub:
+Install the latest release of this fork from GitHub:
 
-    npm install rezalabs/mathjs
+```sh
+npm install github:rezalabs/mathjs
+```
 
-See the [upstream documentation](https://mathjs.org) for full usage guides,
-API reference, and CDN downloads.
+The repository default branch is `release`, so an unpinned install resolves to the most recent release commit rather than to work in progress on `develop`. To pin a semver range, npm resolves `#semver:` specs against git tags:
 
-Math.js can be used similar to JavaScript's built-in Math library. Besides that,
-math.js can evaluate
-[expressions](https://mathjs.org/docs/expressions/index.html)
-and supports
-[chained operations](https://mathjs.org/docs/core/chaining.html).
+```sh
+npm install github:rezalabs/mathjs#semver:^15.2.1
+```
+
+See the [upstream documentation](https://mathjs.org) for full usage guides, API reference, and CDN downloads.
+
+Math.js can be used similar to JavaScript's built-in Math library. Besides that, math.js can evaluate [expressions](https://mathjs.org/docs/expressions/index.html) and supports [chained operations](https://mathjs.org/docs/core/chaining.html).
 
 ```js
 import {
@@ -65,38 +84,41 @@ chain(3)
 
 See the [Getting Started](https://mathjs.org/docs/getting_started.html) for a more detailed tutorial.
 
-
 ## Browser support
 
-Math.js works on any [ES2020](https://262.ecma-international.org/11.0/) compatible JavaScript engine, including node.js, Chrome, Firefox, Safari, and Edge.
-
+Math.js works on any [ES2020](https://262.ecma-international.org/11.0/) compatible JavaScript engine, including Chrome, Firefox, Safari, and Edge. Node.js 18 or newer is required, matching the `engines` field in `package.json`.
 
 ## Documentation
+
+These guides are hosted by upstream mathjs. Changes in this fork are recorded in [HISTORY.md](./HISTORY.md).
 
 - [Getting Started](https://mathjs.org/docs/getting_started.html)
 - [Examples](https://mathjs.org/examples/index.html)
 - [Overview](https://mathjs.org/docs/index.html)
-- [History](https://mathjs.org/history.html)
-
+- [History](./HISTORY.md)
 
 ## Build
 
 First clone the project from github:
 
-    git clone git@github.com:rezalabs/mathjs.git
-    cd mathjs
+```sh
+git clone git@github.com:rezalabs/mathjs.git
+cd mathjs
+```
 
 Install the project dependencies:
 
-    npm install
+```sh
+npm install
+```
 
-Then, the project can be build by executing the build script via npm:
+Then, the project can be built by executing the build script via npm:
 
-    npm run build
+```sh
+npm run build
+```
 
-This will build ESM output, CommonJS output, and the bundle math.js
-from the source files and put them in the folder lib.
-
+This will build ESM output, CommonJS output, and the bundle math.js from the source files and put them in the folder lib.
 
 ## Develop
 
@@ -108,9 +130,7 @@ The code of `mathjs` is written in ES modules, and requires all files to have a 
 
 ### Architecture
 
-What mathjs tries to achieve is to offer an environment where you can do calculations with mixed data types,
-like multiplying a regular `number` with a `Complex` number or a `BigNumber`, and work with all of those in matrices.
-Mathjs also allows to add a new data type with little effort.
+What mathjs tries to achieve is to offer an environment where you can do calculations with mixed data types, like multiplying a regular `number` with a `Complex` number or a `BigNumber`, and work with all of those in matrices. Mathjs also allows to add a new data type with little effort.
 
 The solution that mathjs uses has two main ingredients:
 
@@ -128,58 +148,73 @@ A common case is to implement a new function. This involves the following steps:
 - Write documentation on the function in the source code comment of `myNewFunction.js`. This documentation is used to auto generate documentation on the website. It should include a History section with one line, indicating the upcoming version number in which the function will be created.
 - Write embedded documentation for the new function in `./src/expression/embeddedDocs/function/arithmetic/myNewFunction.js`. Add the new documentation to the index file `./src/expression/embeddedDocs/embeddedDocs.js`.
 - Write unit tests for the function in `./test/unit-tests/function/arithmetic/myNewFunction.test.js`.
-- Write the necessary TypeScript definitions for the new function in `./types/index.d.ts`, and write tests for it in `./test/typescript-tests/testTypes.ts`. This is described in [./types/EXPLANATION.md](./types/EXPLANATION.md) -- make sure to read that page, as Typescript definitions must be added in _multiple_ places in the code.
+- Write the necessary TypeScript definitions for the new function in `./types/index.d.ts`, and write tests for it in `./test/typescript-tests/testTypes.ts`. This is described in [./types/EXPLANATION.md](./types/EXPLANATION.md). Make sure to read that page, as TypeScript definitions must be added in _multiple_ places in the code.
 - Ensure the code style is ok by running `npm run lint` (run `npm run format` to fix the code style automatically).
-
 
 ### Build scripts
 
 The build script currently generates two types of output:
 
 - **any**, generate entry points to create full versions of all functions
-- **number**: generating and entry points to create lightweight functions just supporting `number`
+- **number**: generate entry points to create lightweight functions just supporting `number`
 
 For each function, an object is generated containing the factory functions of all dependencies of the function. This allows to just load a specific set of functions, and not load or bundle any other functionality. So for example, to just create function `add` you can do `math.create(addDependencies)`.
-
 
 ## Test
 
 To execute tests for the library, install the project dependencies once:
 
-    npm install
+```sh
+npm install
+```
 
 Then, the tests can be executed:
 
-    npm test
+```sh
+npm test
+```
 
 To test the type definitions:
 
-    npm run test:types
+```sh
+npm run test:types
+```
 
-Additionally, the tests can be run on FireFox using [headless mode](https://developer.mozilla.org/en-US/Firefox/Headless_mode):
+Additionally, the tests can be run on Firefox using [headless mode](https://developer.mozilla.org/en-US/Firefox/Headless_mode):
 
-    npm run test:browser
+```sh
+npm run test:browser
+```
 
 To run the tests remotely on LambdaTest, first set the environment variables `LT_USERNAME` and `LT_ACCESS_KEY` with your username and access key and then execute:
 
-    npm run test:lambdatest
+```sh
+npm run test:lambdatest
+```
 
 You can separately run the code linter, though it is also executed with `npm test`:
 
-    npm run lint
+```sh
+npm run lint
+```
 
-To automatically fix linting issue, run:
+To automatically fix linting issues, run:
 
-    npm run format
+```sh
+npm run format
+```
 
 To test code coverage of the tests:
 
-    npm run coverage
+```sh
+npm run coverage
+```
 
 To see the coverage results, open the generated report in your browser:
 
-    ./coverage/lcov-report/index.html
-
+```sh
+./coverage/lcov-report/index.html
+```
 
 ### Continuous integration testing
 
@@ -189,7 +224,7 @@ Continuous integration tests are run on [GitHub Actions](https://github.com/reza
 
 mathjs is published under the Apache 2.0 license:
 
-```
+```text
 Copyright (C) 2013-2026 Jos de Jong <wjosdejong@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -205,13 +240,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-This is a fork of the upstream [josdejong/mathjs](https://github.com/josdejong/mathjs)
-project. All upstream credit and copyright belongs to Jos de Jong and
-contributors. This fork maintains the same Apache 2.0 license.
+This is a fork of the upstream [josdejong/mathjs](https://github.com/josdejong/mathjs) project. All upstream credit and copyright belongs to Jos de Jong and contributors. This fork maintains the same Apache 2.0 license.
 
 mathjs contains a JavaScript port of the [CSparse](https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CSparse/Source) library, published under the LGPL-2.1+ license:
 
-```
+```text
 CSparse: a Concise Sparse matrix package.
 Copyright (c) 2006, Timothy A. Davis.
 http://www.suitesparse.com
