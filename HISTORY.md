@@ -68,7 +68,7 @@
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 
-# 2026-04-07, 15.2.0
+# 2026-04-07, 15.2.1
 
 - Feat: Add amp-hour charge unit `Ah` (#3617). Thanks @adrfantini.
 - Feat: #3595 implement `num` and `den` functions returning the parts of

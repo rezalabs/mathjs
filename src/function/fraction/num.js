@@ -40,7 +40,7 @@ export const createNum = /* #__PURE__ */ factory(
      *
      * History:
      *
-     *    v15.2.0      Created
+     *    v15.2.1      Created
      *
      * @param {Fraction | BigNumber | Array | Matrix} x
      *            A fraction, BigNumber, or array with fractions
