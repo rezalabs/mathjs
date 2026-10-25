@@ -21,11 +21,12 @@ export type MathCollection<T = MathGeneric> = MathArray<T> | Matrix<T>
 export type MathArrayElementwiseResult<
   TArray extends MathArray<MathScalarType>,
   TResult extends MathScalarType
-> = TArray extends Array<infer TItem>
-  ? TItem extends MathArray<MathScalarType>
-    ? Array<MathArrayElementwiseResult<TItem, TResult>>
-    : TResult[]
-  : never
+> =
+  TArray extends Array<infer TItem>
+    ? TItem extends MathArray<MathScalarType>
+      ? Array<MathArrayElementwiseResult<TItem, TResult>>
+      : TResult[]
+    : never
 export type MathCollectionElementwiseResult<
   TCollection extends MathCollection<MathScalarType>,
   TResult extends MathScalarType
@@ -915,7 +916,10 @@ export interface MathJsInstance extends MathJsFactory {
    * @param parts An array of strings or valueless units
    * @returns An array of units
    */
-  splitUnit(unit: Unit, parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>): Unit[]
+  splitUnit(
+    unit: Unit,
+    parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>
+  ): Unit[]
 
   /**
    * Create a string or convert any object into a string. Elements of
@@ -944,7 +948,10 @@ export interface MathJsInstance extends MathJsFactory {
    * @param unit The valueless unit to be created
    * @returns The created unit
    */
-  unit(value: number | BigNumber | Fraction | Complex, unit: string | Unit): Unit
+  unit(
+    value: number | BigNumber | Fraction | Complex,
+    unit: string | Unit
+  ): Unit
   /**
    * @param value The dimensionless value
    * @returns A dimensionless unit
@@ -5124,7 +5131,10 @@ export interface MathJsChain<TValue> {
    * unit.
    * @param parts An array of strings or valueless units
    */
-  splitUnit(this: MathJsChain<Unit>, parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>): MathJsChain<Unit[]>
+  splitUnit(
+    this: MathJsChain<Unit>,
+    parts: ReadonlyArray<string | Unit> | Matrix<string | Unit>
+  ): MathJsChain<Unit[]>
 
   /**
    * Create a string or convert any object into a string. Elements of
@@ -5142,7 +5152,10 @@ export interface MathJsChain<TValue> {
    * @param unit The unit to be created
    */
   unit(this: MathJsChain<string>, unit?: string): MathJsChain<Unit>
-  unit(this: MathJsChain<number | BigNumber | Fraction | Complex>, unit: string | Unit): MathJsChain<Unit>
+  unit(
+    this: MathJsChain<number | BigNumber | Fraction | Complex>,
+    unit: string | Unit
+  ): MathJsChain<Unit>
   unit(this: MathJsChain<number | BigNumber | Fraction>): MathJsChain<Unit>
   unit(this: MathJsChain<MathCollection>): MathJsChain<Unit[]>
 

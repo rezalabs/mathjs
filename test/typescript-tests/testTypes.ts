@@ -1875,14 +1875,14 @@ Units examples
     expectTypeOf(math.unit(math.bignumber(5))).toExtend<Unit>()
     expectTypeOf(math.unit(math.fraction(5, 2))).toExtend<Unit>()
     // Complex without a valueless unit is not supported at runtime.
-    // @ts-expect-error
+    // @ts-expect-error: no matching overload for complex without unit
     assert.throws(() => math.unit(math.complex(5, 0)))
     // bigint values are auto-converted to number at runtime, but the
     // TypeScript overloads deliberately exclude bigint from the
     // value parameter since typed-function doesn't list it explicitly.
-    // @ts-expect-error
+    // @ts-expect-error: bigint is not in the value overloads
     math.unit(5n)
-    // @ts-expect-error
+    // @ts-expect-error: bigint is not in the value overloads
     math.unit(5n, 'cm')
 
     // Test unit function with just MathCollection
@@ -1972,9 +1972,14 @@ Units examples
 
   // units can be split into other units
   math.unit('1 m').splitUnit(['ft', 'in'])
-  math.unit('1 m').splitUnit(math.matrix(['ft', 'in']) as unknown as Matrix<string>)
+  math
+    .unit('1 m')
+    .splitUnit(math.matrix(['ft', 'in']) as unknown as Matrix<string>)
   math.splitUnit(math.unit('1 m'), ['ft', 'in'])
-  math.splitUnit(math.unit('1 m'), math.matrix(['ft', 'in']) as unknown as Matrix<string>)
+  math.splitUnit(
+    math.unit('1 m'),
+    math.matrix(['ft', 'in']) as unknown as Matrix<string>
+  )
 
   // verify splitUnit result is Unit[]
   const splitResult = math.splitUnit(math.unit('1 m'), ['ft', 'in'])
@@ -1982,7 +1987,9 @@ Units examples
   expectTypeOf(splitResult[0]).toMatchTypeOf<math.Unit>()
 
   // runtime: (1m).splitUnit(["ft", "in"]) via dot notation — was broken before fix
-  const splitDotResult = math.evaluate('(1 m).splitUnit(["ft", "in"])') as math.MathCollection
+  const splitDotResult = math.evaluate(
+    '(1 m).splitUnit(["ft", "in"])'
+  ) as math.MathCollection
   expectTypeOf(splitDotResult).toMatchTypeOf<math.MathCollection>()
   assert.deepStrictEqual(
     splitDotResult,

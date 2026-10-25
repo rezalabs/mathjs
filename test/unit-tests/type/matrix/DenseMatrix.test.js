@@ -156,7 +156,7 @@ describe('DenseMatrix', function () {
     })
 
     it('should throw an error when called with invalid datatype', function () {
-      assert.throws(function () { new DenseMatrix([], 1) }, /Error: Invalid datatype: 1/)
+      assert.throws(() => new DenseMatrix([], 1), /Error: Invalid datatype: 1/)
     })
 
     it('should not mutate the input data when creating a Matrix (1)', function () {
