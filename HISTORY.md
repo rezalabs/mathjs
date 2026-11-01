@@ -81,6 +81,12 @@
   `elementaryCharge`. `1 acre to sqyd`, `760 torr to atm`, `1 kip to lbf`,
   `1 rod^2 to sqrd` and `1 chain^2 to sqch` now give exact results
   (#3665, #3739).
+- Docs: the units pages now explain that the unit parser accepts grouped
+  units but not an exponent on a group (`math.unit('(m/s)^2')` throws,
+  while `(m/s)^2` works in the expression parser), and that `min` and `sec`
+  resolve to the functions rather than the units in expressions, with the
+  full unit names and scope variables as workarounds. The time unit list
+  now includes `sec` (#3714).
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

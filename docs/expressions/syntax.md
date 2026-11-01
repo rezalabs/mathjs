@@ -594,6 +594,20 @@ math.evaluate('sin(45 deg)')                // Number, 0.7071067811865475
 math.evaluate('9.81 m/s^2 * 5 s to mi/h')   // Unit, 109.72172512527 mi / h
 ```
 
+An exponent applies to a single unit name. The expression parser applies it to the whole grouped unit, which the unit parser does not support:
+
+```js
+math.evaluate('(m/s)^2')   // Unit, m^2 / s^2
+math.unit('(m/s)^2')       // SyntaxError: Unexpected "^" in "(m/s)^2" at index 5
+```
+
+Two unit names are also function names: `min` is the function `min` and the unit `minute`, and `sec` is the function `sec` and the unit `second`. In an expression the function wins, so `1 min` and `1 sec` throw. Use the full unit names, or pass the unit as a scope variable, which takes precedence over the built-in function:
+
+```js
+math.evaluate('2 minute')                          // Unit, 2 minute
+math.evaluate('2 second')                          // Unit, 2 second
+math.evaluate('2 min', { min: math.unit('min') })  // Unit, 2 min
+```
 
 ### Strings
 

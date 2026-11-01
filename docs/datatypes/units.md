@@ -70,6 +70,33 @@ const correct4 = math.evaluate('8.314 (m^3 * Pa) / (mol * K)') // Unit 8.314 (m^
 
 In summary: be careful with implicit multiplication. In case of doubt, always use an explicit `*` and parenthesis.
 
+### Grouping and exponents
+
+The unit parser accepts parentheses to group units, but an exponent must follow a single unit name. Raising a group to a power is a syntax error, so write the exponent on every unit inside the group instead:
+
+```js
+math.unit('kg (m/s)')       // Unit (kg m) / s
+math.unit('(m/s)^2')        // SyntaxError: Unexpected "^" in "(m/s)^2" at index 5
+math.unit('m^2/s^2')        // Unit m^2 / s^2
+```
+
+The expression parser applies the exponent to everything inside the parentheses, so the same unit can be written as `(m/s)^2` there:
+
+```js
+math.evaluate('(m/s)^2')    // Unit m^2 / s^2
+```
+
+### Unit names that clash with function names
+
+The expression parser resolves a symbol to a built-in function before it considers it as a unit name. Two units share their name with a function: `min` is the function `min` and also the unit `minute`, and `sec` is the function `sec` and also the unit `second`. In the expression parser both symbols resolve to the function, so `1 min` and `1 sec` throw. Use the full unit names, or supply the unit as a scope variable, which takes precedence over the built-in function:
+
+```js
+math.evaluate('2 minute')                          // Unit 2 minute
+math.evaluate('2 second')                          // Unit 2 second
+math.evaluate('2 min', { min: math.unit('min') })  // Unit 2 min
+```
+
+`math.unit('min')` and `math.unit('sec')` are not affected, because the unit parser does not know about functions. The unit `chain` looks like a third clash, but the function `chain` is deliberately unavailable in the expression parser, so `math.evaluate('2 chain')` returns `Unit 2 chain`.
 
 ## Calculations
 
@@ -307,7 +334,7 @@ Surface area        | m2, sqin, sqft, sqyd, sqmi, sqrd, sqch, sqmil, acre, hecta
 Volume              | m3, litre (l, L, lt, liter), cc, cuin, cuft, cuyd, teaspoon, tablespoon
 Liquid volume       | minim, fluiddram (fldr), fluidounce (floz), gill (gi), cup (cp), pint (pt), quart (qt), gallon (gal), beerbarrel (bbl), oilbarrel (obl), hogshead, drop (gtt)
 Angles              | rad (radian), deg (degree), grad (gradian), cycle, arcsec (arcsecond), arcmin (arcminute)
-Time                | second (s, secs, seconds), minute (min, mins, minutes), hour (h, hr, hrs, hours), day (days), week (weeks), month (months), year (years), decade (decades), century (centuries), millennium (millennia)
+Time                | second (s, sec, secs, seconds), minute (min, mins, minutes), hour (h, hr, hrs, hours), day (days), week (weeks), month (months), year (years), decade (decades), century (centuries), millennium (millennia)
 Frequency           | hertz (Hz)
 Mass                | gram(g), tonne, ton, grain (gr), dram (dr), ounce (oz), poundmass (lbm, lb, lbs), hundredweight (cwt), stick, stone
 Electric current    | ampere (A)
