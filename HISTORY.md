@@ -71,6 +71,16 @@
   is `1 / (1 - x^2)`. The rule built the right expression and then applied
   an extra unary minus; composite arguments like `acoth(2x)` were wrong in
   the same way (#3727).
+- Fix: several built-in units were rounded, so conversions between related
+  units were slightly off. `acre` is now exactly 4840 sqyd
+  (4046.8564224 m2, was 4046.86), `torr` is 1/760 atm (was 133.322 Pa),
+  `mmHg` is 133.322387415 Pa, `kip` is 1000 lbf (4448.2216152605 N, was
+  4448.2216), `sqrd` is 1 rod^2 (25.29285264 m2, was 25.29295), `sqch` is
+  1 chain^2 (404.68564224 m2, was 404.6873), and `eV` and `electronvolt`
+  use the exact 2019 SI value 1.602176634e-19 J, matching
+  `elementaryCharge`. `1 acre to sqyd`, `760 torr to atm`, `1 kip to lbf`,
+  `1 rod^2 to sqrd` and `1 chain^2 to sqch` now give exact results
+  (#3665, #3739).
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 

@@ -1230,8 +1230,32 @@ describe('Unit', function () {
       assert.strictEqual(new Unit(1, 'Wb/m^2').equals(new Unit(1, 'T')), true)
       assert.strictEqual(new Unit(1, 'Wb/A').equals(new Unit(1, 'H')), true)
       assert.strictEqual(new Unit(1, 'ohm^-1').equals(new Unit(1, 'S')), true)
-      assert.strictEqual(new Unit(1, 'eV').equals(new Unit(1.602176565e-19, 'J')), true)
+      assert.strictEqual(new Unit(1, 'eV').equals(new Unit(1.602176634e-19, 'J')), true)
       assert.strictEqual(new Unit(1, 'kilogramforce').equals(new Unit(1, 'kgf')), true)
+    })
+
+    it('should define derived units from their exact definition', function () {
+      // An acre is exactly 4840 square yards
+      approxEqual(new Unit(1, 'acre').toNumeric('sqyd'), 4840, 1e-12)
+      approxEqual(new Unit(1, 'acre').toNumeric('sqft'), 43560, 1e-12)
+      approxEqual(new Unit(1, 'sqmi').toNumeric('acre'), 640, 1e-12)
+      assert.strictEqual(new Unit(1, 'acre').toNumeric('m2'), 4046.8564224)
+
+      // A torr is exactly 1/760 atm, a conventional mmHg is 133.322387415 Pa
+      approxEqual(new Unit(760, 'torr').toNumeric('atm'), 1, 1e-12)
+      assert.strictEqual(new Unit(1, 'mmHg').toNumeric('Pa'), 133.322387415)
+
+      // A kip is exactly 1000 pound-force
+      approxEqual(new Unit(1, 'kip').toNumeric('lbf'), 1000, 1e-12)
+      assert.strictEqual(new Unit(1, 'kip').toNumeric('N'), 4448.2216152605)
+
+      // A square rod and a square chain are the squares of the length units
+      assert.strictEqual(new Unit(1, 'sqrd').toNumeric('m2'), 25.29285264)
+      assert.strictEqual(new Unit(1, 'sqch').toNumeric('m2'), 404.68564224)
+
+      // An electronvolt is the elementary charge times one volt
+      assert.strictEqual(new Unit(1, 'eV').toNumeric('J'), 1.602176634e-19)
+      assert.strictEqual(math.evaluate('elementaryCharge * 1 V to eV').toNumeric(), 1)
     })
 
     it("For each built-in unit, 'name' should match key", function () {
