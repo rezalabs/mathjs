@@ -2,6 +2,7 @@
 import assert from 'assert'
 
 import math from '../../../../src/defaultInstance.js'
+import { approxEqual } from '../../../../tools/approx.js'
 const OperatorNode = math.OperatorNode
 const ConstantNode = math.ConstantNode
 const SymbolNode = math.SymbolNode
@@ -158,7 +159,7 @@ describe('derivative', function () {
     compareString(derivativeWithoutSimplify('atanh((2x))', 'x'), '(2 * 1) / (1 - (2 x) ^ 2)')
     compareString(derivativeWithoutSimplify('asech((2x))', 'x'), '-(2 * 1) / ((2 x) * sqrt(1 - (2 x) ^ 2))')
     compareString(derivativeWithoutSimplify('acsch((2x))', 'x'), '-(2 * 1) / (abs((2 x)) * sqrt((2 x) ^ 2 + 1))')
-    compareString(derivativeWithoutSimplify('acoth((2x))', 'x'), '-(2 * 1) / (1 - (2 x) ^ 2)')
+    compareString(derivativeWithoutSimplify('acoth((2x))', 'x'), '(2 * 1) / (1 - (2 x) ^ 2)')
     compareString(derivativeWithoutSimplify('abs(2x)', 'x'), '2 * 1 * abs(2 x) / 2 x')
 
     // See power operator tests above
@@ -172,6 +173,18 @@ describe('derivative', function () {
     compareString(derivativeWithoutSimplify('pow(x^3 + x, 5x + 2)', 'x'), '(x ^ 3 + x) ^ (5 x + 2) * ((3 * 1 * x ^ (3 - 1) + 1) * (5 x + 2) / (x ^ 3 + x) + (5 * 1 + 0) * log(x ^ 3 + x))')
 
     compareString(derivativeWithoutSimplify('exp(2x)', 'x'), '2 * 1 * exp(2 x)')
+  })
+
+  it('should give the acoth derivative the sign of 1 / (1 - x^2)', function () {
+    // d/dx(acoth(x)) = 1 / (1 - x^2), which is negative for every real x with |x| > 1
+    const derivativeAcoth = derivative('acoth(x)', 'x')
+    approxEqual(derivativeAcoth.evaluate({ x: 2 }), -1 / 3)
+    approxEqual(derivativeAcoth.evaluate({ x: -2 }), -1 / 3)
+
+    // The chain rule keeps the sign: d/dx(acoth(2x)) = 2 / (1 - 4x^2)
+    const derivativeComposite = derivative('acoth(2x)', 'x')
+    approxEqual(derivativeComposite.evaluate({ x: 1 }), -2 / 3)
+    approxEqual(derivativeComposite.evaluate({ x: -1 }), -2 / 3)
   })
 
   it('should take the partial derivative of an expression', function () {

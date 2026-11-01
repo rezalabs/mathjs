@@ -65,6 +65,12 @@
   `datatype()`, `get()`) instead of internal fields (`_size`, `_data`,
   `_datatype`, `_values`, `_index`, `_ptr`). Fixed multiple `assert.throws`
   calls that lacked error message validation.
+- Fix: the symbolic derivative of `acoth` had the wrong sign.
+  `derivative('acoth(x)', 'x')` returned `-(1 / (1 - x^2))`, which is
+  positive for every real `x` with `|x| > 1`, while the correct derivative
+  is `1 / (1 - x^2)`. The rule built the right expression and then applied
+  an extra unary minus; composite arguments like `acoth(2x)` were wrong in
+  the same way (#3727).
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 
