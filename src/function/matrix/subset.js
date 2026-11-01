@@ -105,7 +105,7 @@ export const createSubset = /* #__PURE__ */ factory(name, dependencies, ({ typed
   })
 
   /**
-   * Broadcasts a replacment value to be the same size as index
+   * Broadcasts a replacement value to be the same size as index
    * @param {number | BigNumber | Array | Matrix} replacement Replacement value to try to broadcast
    * @param {*} index Index value
    * @returns broadcasted replacement that matches the size of index
@@ -113,7 +113,7 @@ export const createSubset = /* #__PURE__ */ factory(name, dependencies, ({ typed
 
   function _broadcastReplacement (replacement, index) {
     if (typeof replacement === 'string') {
-      throw new Error('can\'t boradcast a string')
+      throw new Error('can\'t broadcast a string')
     }
     if (index.isScalar()) {
       return replacement

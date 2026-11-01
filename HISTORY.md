@@ -87,6 +87,10 @@
   resolve to the functions rather than the units in expressions, with the
   full unit names and scope variables as workarounds. The time unit list
   now includes `sec` (#3714).
+- Fix: spelling in comments and in two error messages: `replacement`,
+  `two or three dimensional points`, `cumulative`, `calculate`,
+  `a representation`, `parentheses`, `Simplify`, `broadcast`, `fahrenheit`,
+  and `definition` (#3666, #3667, #3668, #3669, #3670).
 - Docs: fix the browser example `rocket_trajectory_optimization.html` (#3654).
   Thanks @dvd101x.
 
