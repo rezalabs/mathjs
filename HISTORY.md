@@ -1,6 +1,8 @@
 # History
 
-# unpublished changes since 15.2.0 (fork version 15.2.1+rezalabs.1)
+# unpublished changes since 15.2.2+rezalabs.1
+
+# 2026-11-01, 15.2.2
 
 - Fix: the short-circuiting transforms `and`, `or`, `bitAnd`, `bitOr`, and
   `nullish` crashed with a cryptic TypeError when called with fewer than two
